@@ -1,0 +1,114 @@
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+
+# Load the cleaned dataset
+cleaned_file_path = r"C:\Users\ibrah\OneDrive\Masaüstü\stat112\cleaned_marketing_product_performance.csv"
+cleaned_df = pd.read_csv(cleaned_file_path)
+
+import plotly.express as px
+
+# Load the cleaned dataset
+cleaned_file_path = r"C:\Users\ibrah\OneDrive\Masaüstü\stat112\cleaned_marketing_product_performance.csv"
+cleaned_df = pd.read_csv(cleaned_file_path)
+
+# 2. Revenue Distribution by Region
+fig2 = px.pie(
+    cleaned_df,
+    names='Region',
+    values='Revenue',
+    title='Revenue Distribution by Region',
+    color_discrete_sequence=px.colors.sequential.RdBu
+)
+fig2.update_traces(textinfo='percent+label')
+fig2.show()
+
+# 3. Customer Satisfaction by Marketing Channel
+fig3 = px.box(
+    cleaned_df,
+    x='Marketing_Channel',
+    y='Customer_Satisfaction',
+    title='Customer Satisfaction by Marketing Channel',
+    labels={'Marketing_Channel': 'Marketing Channel', 'Customer_Satisfaction': 'Customer Satisfaction'},
+    color='Marketing_Channel'
+)
+fig3.update_layout(xaxis=dict(title='Marketing Channel'), yaxis=dict(title='Customer Satisfaction'))
+fig3.show()
+
+# 4. Revenue Trend Over Months
+monthly_revenue = cleaned_df.groupby('Month')['Revenue'].sum().reset_index()
+fig4 = px.line(
+    monthly_revenue,
+    x='Month',
+    y='Revenue',
+    title='Revenue Trend Over Months',
+    labels={'Month': 'Month', 'Revenue': 'Revenue'},
+    markers=True
+)
+fig4.update_layout(xaxis=dict(title='Month'), yaxis=dict(title='Revenue'), xaxis_tickmode='linear')
+fig4.show()
+
+
+
+import plotly.express as px
+import pandas as pd
+
+# Load the cleaned dataset
+cleaned_file_path = r"C:\Users\ibrah\OneDrive\Masaüstü\stat112\cleaned_marketing_product_performance.csv"
+cleaned_df = pd.read_csv(cleaned_file_path)
+
+# 3D Scatter Plot: Units Sold vs Revenue vs Marketing Spend
+fig = px.scatter_3d(
+    cleaned_df,
+    x='Units_Sold',
+    y='Revenue',
+    z='Marketing_Spend',
+    color='Product_Category',
+    size='Marketing_Spend',
+    title='Units Sold, Revenue, and Marketing Spend by Product Category',
+    labels={'Units_Sold': 'Units Sold', 'Revenue': 'Revenue', 'Marketing_Spend': 'Marketing Spend'},
+    hover_data=['Region', 'Marketing_Channel', 'Customer_Satisfaction']
+)
+
+# Update layout
+fig.update_layout(
+    scene=dict(
+        xaxis_title='Units Sold',
+        yaxis_title='Revenue',
+        zaxis_title='Marketing Spend'
+    ),
+    margin=dict(l=0, r=0, b=0, t=40)
+)
+
+# Show the plot
+fig.show()
+
+
+# Pivot the data to create a matrix for the heatmap
+heatmap_data = cleaned_df.pivot_table(
+    index='Region',
+    columns='Product_Category',
+    values='Revenue',
+    aggfunc='mean'  # Aggregate using the mean of Revenue
+)
+
+# Create the heatmap
+plt.figure(figsize=(12, 8))
+sns.heatmap(heatmap_data, annot=True, fmt=".2f", cmap="YlGnBu", cbar_kws={'label': 'Average Revenue'})
+plt.title('Average Revenue by Region and Product Category', fontsize=16)
+plt.xlabel('Product Category', fontsize=14)
+plt.ylabel('Region', fontsize=14)
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
+
+# Create the violin plot
+plt.figure(figsize=(12, 6))
+sns.violinplot(data=cleaned_df, x='Region', y='Revenue', palette="muted")
+plt.title('Distribution of Revenue by Region', fontsize=16)
+plt.xlabel('Region', fontsize=14)
+plt.ylabel('Revenue', fontsize=14)
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
